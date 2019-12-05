@@ -14,6 +14,9 @@ entity TETRIS_CONTROLLER is
  key_up : in STD_LOGIC;
  key_down : in STD_LOGIC;
  key_space : in STD_LOGIC;
+ key_z : in STD_LOGIC;
+ key_c : in STD_LOGIC;
+ key_esc : in STD_LOGIC;
  --
  fall : out STD_LOGIC;
  move_left : out STD_LOGIC;
@@ -26,6 +29,8 @@ entity TETRIS_CONTROLLER is
  can_move_right : in STD_LOGIC;
  can_rotate : in STD_LOGIC;
  can_hold : in STD_LOGIC;
+ --
+ tetris : out STD_LOGIC;
  --
  merge : out STD_LOGIC;
  create_new : out STD_LOGIC;
@@ -47,9 +52,13 @@ architecture BEHV of TETRIS_CONTROLLER is
  signal key_up_old : STD_LOGIC;
  signal key_down_old : STD_LOGIC;
  signal key_space_old : STD_LOGIC;
+ signal key_z_old : STD_LOGIC;
+ signal key_c_old : STD_LOGIC;
+ signal key_esc_old : STD_LOGIC;
 
  constant FALL_DELAY_STANDARD : NATURAL := 50;
  constant FALL_DELAY_FAST : NATURAL := 5;
+ constant FALL_DELAY_HARD : NATURAL := 1;
  signal fall_delay : NATURAL range 0 to 50;
  signal fall_counter : NATURAL range 0 to 50 - 1;
  signal fall_signal : STD_LOGIC;
@@ -78,6 +87,9 @@ begin
  key_up_old <= '0';
  key_down_old <= '0';
  key_space_old <= '0';
+ key_z_old <= '0';
+ key_c_old <= '0';
+ key_esc_old <= '0';
 
 elsif clock'event and clock = '1' then
  key_left_old <= key_left;
@@ -85,6 +97,9 @@ elsif clock'event and clock = '1' then
  key_up_old <= key_up;
  key_down_old <= key_down;
  key_space_old <= key_space;
+ key_z_old <= key_z;
+ key_c_old <= key_c;
+ key_esc_old <= key_esc;
 
  end if;
  end process;
@@ -113,12 +128,31 @@ elsif clock'event and clock = '1' then
 
  elsif (key_down_old = '1') and (key_down = '0') then
 
- -- down key is realesed,
+ -- down key is released,
  -- fall delay is set to normal
  fall_delay <= FALL_DELAY_STANDARD - stage_register * 5;
  fall_counter <= FALL_DELAY_STANDARD - 1;
 
  else
+
+ end if;
+ 
+  if (key_space_old = '0') and (key_space = '1') then
+
+ -- space key is pressed,
+ -- fall delay is set to super fast,
+ -- a fall pulse is immediately sent
+ fall_delay <= FALL_DELAY_HARD;
+ fall_counter <= FALL_DELAY_HARD - 1;
+ fall_signal <= '1';
+
+ elsif (can_fall='0') then
+     fall_delay <= FALL_DELAY_STANDARD - stage_register * 5;
+     fall_counter <= FALL_DELAY_STANDARD - 1;
+     
+ else
+ 
+ end if;
 
  if clock_ten = '1' then
  fall_counter <= fall_counter - 1;
@@ -126,8 +160,6 @@ elsif clock'event and clock = '1' then
  fall_signal <= '1';
  fall_counter <= fall_delay - 1;
  end if;
- end if;
-
  end if;
 
  end if;
@@ -190,6 +222,8 @@ elsif clock'event and clock = '1' then
  line_complete_combo <= 0;
  remaining_register <= 19;
  stage_register <= 0;
+ 
+ tetris <= '0';
 
  elsif clock'event and clock = '1' then
 
@@ -203,6 +237,8 @@ elsif clock'event and clock = '1' then
 
  merge <= '0';
  create_new <= '0';
+
+ tetris <= '0';
 
  play_music <= '0';
 
@@ -232,7 +268,7 @@ merge <= '1';
 = '1') then
  rotate <= '1';
 
- elsif (key_space_old = '0') and (key_space = '1') and
+ elsif (key_c_old = '0') and (key_c = '1') and
 (can_hold = '1') then
  hold <= '1';
 
@@ -248,6 +284,7 @@ if (line_complete_old = '1') and (line_complete = '0') then
 
  if line_complete_combo = 4 then
  score_register <= score_register + 160;
+ tetris <= '1';
  elsif line_complete_combo = 3 then
  score_register <= score_register + 90;
  elsif line_complete_combo = 2 then

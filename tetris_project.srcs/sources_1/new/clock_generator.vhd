@@ -6,12 +6,15 @@ entity CLOCK_GENERATOR is
  clear : in STD_LOGIC;
  --
  clock_out : out STD_LOGIC;
- clock_ten : out STD_LOGIC
+ clock_ten : out STD_LOGIC;
+ clock_m : out STD_LOGIC
  );
 end entity;
 architecture BEHV of CLOCK_GENERATOR is
  signal out_signal : STD_LOGIC;
  signal out_counter : INTEGER range 0 to 4 - 1;
+ signal m_signal : STD_LOGIC;
+ signal m_counter : INTEGER range 0 to 4 - 1;
  signal ten_signal : STD_LOGIC;
  signal ten_counter : INTEGER range 0 to 1000000 - 1;
 begin
@@ -24,6 +27,9 @@ begin
 
  ten_signal <= '0';
  ten_counter <= 0;
+ 
+ m_signal <= '0';
+ m_counter <= 0;
 
  elsif clock'event and clock = '1' then
 
@@ -32,6 +38,13 @@ begin
  if out_counter = 4 - 1 then
  out_signal <= '1';
  out_counter <= 0;
+ end if;
+ 
+ m_signal <= '0';
+ m_counter <= m_counter + 1;
+ if m_counter = 4 - 1 then
+ m_signal <= '1';
+ m_counter <= 0;
  end if;
 
  ten_signal <= '0';
@@ -46,5 +59,6 @@ begin
 
  clock_out <= out_signal;
  clock_ten <= ten_signal;
+ clock_m <= m_signal;
 
 end architecture;

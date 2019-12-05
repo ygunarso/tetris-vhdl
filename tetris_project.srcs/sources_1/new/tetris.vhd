@@ -5,6 +5,7 @@ entity TETRIS is
  port(
  clock : in STD_LOGIC;
  clear : in STD_LOGIC;
+ sw : in STD_LOGIC_VECTOR (2 downto 0);
  --
  hsync : out STD_LOGIC;
  vsync : out STD_LOGIC;
@@ -12,9 +13,14 @@ entity TETRIS is
  green : out STD_LOGIC_VECTOR (3 downto 0);
  blue : out STD_LOGIC_VECTOR (3 downto 0);
  --
- ps2_clk : in STD_LOGIC;
- ps2_data : in STD_LOGIC
+ key_enter1 : in STD_LOGIC;
+ key_left1: in STD_LOGIC;
+ key_right1: in STD_LOGIC;
+ key_down1: in STD_LOGIC;
  --
+ audio : inout STD_LOGIC;
+ ps2_data : inout STD_LOGIC;
+ ps2_clk : inout STD_LOGIC
  );
 end entity;
 architecture BEHV of TETRIS is
@@ -24,7 +30,8 @@ architecture BEHV of TETRIS is
  clear : in STD_LOGIC;
  --
  clock_out : out STD_LOGIC;
- clock_ten : out STD_LOGIC
+ clock_ten : out STD_LOGIC;
+ clock_m : out STD_LOGIC
  );
  end component;
 
@@ -59,7 +66,9 @@ architecture BEHV of TETRIS is
  --
  red : out STD_LOGIC_VECTOR (3 downto 0);
  green : out STD_LOGIC_VECTOR (3 downto 0);
- blue : out STD_LOGIC_VECTOR (3 downto 0)
+ blue : out STD_LOGIC_VECTOR (3 downto 0);
+ sw : in STD_LOGIC_VECTOR (2 downto 0);
+ tetris : in STD_LOGIC
  );
  end component;
 
@@ -106,6 +115,9 @@ architecture BEHV of TETRIS is
  key_up : in STD_LOGIC;
  key_down : in STD_LOGIC;
  key_space : in STD_LOGIC;
+ key_z : in STD_LOGIC;
+ key_c : in STD_LOGIC;
+ key_esc : in STD_LOGIC;
  --
  fall : out STD_LOGIC;
  move_left : out STD_LOGIC;
@@ -123,6 +135,7 @@ architecture BEHV of TETRIS is
  create_new : out STD_LOGIC;
  line_complete : in STD_LOGIC;
  game_over : in STD_LOGIC;
+ tetris : out STD_LOGIC;
  --
  score : out INTEGER range 0 to 999999 ;
  remaining : out INTEGER range 0 to 19;
@@ -141,8 +154,51 @@ architecture BEHV of TETRIS is
  );
  end component;
 
+ component music is
+ port(
+     clock_m : in STD_LOGIC;
+     reset : in STD_LOGIC;
+     --
+     audio_out : out STD_LOGIC
+ );
+ end component;
+
+ component keyboard_controller is
+ port(
+     clock : in STD_LOGIC;
+     clear : in STD_LOGIC;
+     --
+     ps2_clk : in STD_LOGIC;
+     ps2_data : in STD_LOGIC;
+     --
+     key_code : out STD_LOGIC_VECTOR (7 downto 0);
+     key_event : out STD_LOGIC
+ );
+ end component;
+ 
+ component keyboard_source is
+ port(
+     clock : in STD_LOGIC;
+     clear : in STD_LOGIC;
+     --
+     key_code : in STD_LOGIC_VECTOR (7 downto 0);
+     key_event : in STD_LOGIC;
+     --
+     key_enter : out STD_LOGIC;
+     key_left : out STD_LOGIC;
+     key_right : out STD_LOGIC;
+     key_up : out STD_LOGIC;
+     key_down : out STD_LOGIC;
+     key_space : out STD_LOGIC;
+     key_z : out STD_LOGIC;
+     key_c : out STD_LOGIC;
+     key_esc : out STD_LOGIC
+ );
+ end component;
+
  signal clock_out : STD_LOGIC;
  signal clock_ten : STD_LOGIC;
+ signal clock_m : STD_LOGIC;
 
  signal wire : STD_LOGIC_VECTOR (12 downto 0);
 
@@ -163,13 +219,14 @@ architecture BEHV of TETRIS is
 
  signal key_code : STD_LOGIC_VECTOR (7 downto 0);
  signal key_event : STD_LOGIC;
- signal key : STD_LOGIC_VECTOR (5 downto 0);
+ signal key : STD_LOGIC_VECTOR (8 downto 0);
 
  signal audio_mono : STD_LOGIC;
  signal play_music : STD_LOGIC;
 
  signal game_over : STD_LOGIC;
  signal game_reset : STD_LOGIC;
+ signal tetris : STD_LOGIC;
 
 begin
 
@@ -179,7 +236,16 @@ begin
  clear => clear,
  --
  clock_out => clock_out,
- clock_ten => clock_ten
+ clock_ten => clock_ten,
+ clock_m => clock_m
+ );
+
+ mm : entity work.music port map(
+ clock_m => clock_m,
+ reset => game_reset,
+ state => sw,
+ --
+ audio_out => audio
  );
 
  U2 : VGA_CONTROLLER port map(
@@ -210,7 +276,9 @@ begin
  --
  red => red,
  green => green,
- blue => blue
+ blue => blue,
+ sw => sw,
+ tetris => tetris
  );
 
  U4 : TETRIS_DATA port map(
@@ -253,6 +321,9 @@ begin
  key_up => key(3),
  key_down => key(4),
  key_space => key(5),
+ key_z => key(6),
+ key_c => key(7),
+ key_esc => key(8),
  --
  fall => wire(0),
  move_left => wire(1),
@@ -274,7 +345,8 @@ begin
  score => wire_score,
  remaining => wire_remaining,
  stage => wire_stage,
- play_music => play_music
+ play_music => play_music,
+ tetris => tetris
  );
 
  U6 : RAND_NUM_GEN port map(
@@ -283,6 +355,35 @@ begin
  --
  start => key(0),
  tetrimino => wire_tetrimino
+ );
+ 
+ U7 : keyboard_source port map(
+ clock => clock_out,
+ clear => clear,
+ --
+ key_code => key_code,
+ key_event => key_event,
+ --
+ key_enter => key(0),
+ key_left => key(1),
+ key_right => key(2),
+ key_up => key(3),
+ key_down => key(4),
+ key_space => key(5),
+ key_z => key(6),
+ key_c => key(7),
+ key_esc => key(8)
+ );
+ 
+ U8 : keyboard_controller port map(
+ clock => clock_out,
+ clear => clear,
+ --
+ ps2_clk => ps2_clk,
+ ps2_data => ps2_data,
+ --
+ key_code => key_code,
+ key_event => key_event
  );
 
 end architecture;

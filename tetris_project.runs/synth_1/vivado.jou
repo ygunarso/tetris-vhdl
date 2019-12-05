@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Thu Dec  5 11:09:47 2019
+# Process ID: 11525
+# Current directory: /home/ygunarso/tetris_project/tetris_project.runs/synth_1
+# Command line: vivado -log TETRIS.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source TETRIS.tcl
+# Log file: /home/ygunarso/tetris_project/tetris_project.runs/synth_1/TETRIS.vds
+# Journal file: /home/ygunarso/tetris_project/tetris_project.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source TETRIS.tcl -notrace

@@ -1,0 +1,150 @@
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
+| Date         : Thu Dec  5 11:13:01 2019
+| Host         : ygunarso-MacBookPro running 64-bit Ubuntu 18.04.3 LTS
+| Command      : report_control_sets -verbose -file TETRIS_control_sets_placed.rpt
+| Design       : TETRIS
+| Device       : xc7a100t
+------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    72 |
+|    Minimum number of control sets                        |    72 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |   154 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    72 |
+| >= 0 to < 4        |     1 |
+| >= 4 to < 6        |     4 |
+| >= 6 to < 8        |     3 |
+| >= 8 to < 10       |     3 |
+| >= 10 to < 12      |     6 |
+| >= 12 to < 14      |     2 |
+| >= 14 to < 16      |     5 |
+| >= 16              |    48 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              25 |           25 |
+| No           | No                    | Yes                    |             135 |           52 |
+| No           | Yes                   | No                     |             386 |          103 |
+| Yes          | No                    | No                     |               0 |            0 |
+| Yes          | No                    | Yes                    |            1020 |          551 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++------------------+--------------------------------+-------------------------------+------------------+----------------+
+|   Clock Signal   |          Enable Signal         |        Set/Reset Signal       | Slice Load Count | Bel Load Count |
++------------------+--------------------------------+-------------------------------+------------------+----------------+
+|  clock_out_BUFG  |                                |                               |                1 |              1 |
+|  clock_out_BUFG  | U8/bit_counter[3]_i_1_n_0      | clear_IBUF                    |                1 |              4 |
+|  clock_out_BUFG  | U5/fall1                       | U4/key_enter_reg              |                2 |              4 |
+|  clock_out_BUFG  | U7/ten_signal_reg[0]           | U4/key_enter_reg              |                3 |              5 |
+|  clock_out_BUFG  | U4/E[0]                        | U4/key_enter_reg              |                2 |              5 |
+|  clock_out_BUFG  | U7/key_space_reg_1[0]          | U4/key_enter_reg              |                3 |              6 |
+|  clock_out_BUFG  | U7/key_space_reg_0[0]          | U4/key_enter_reg              |                1 |              6 |
+|  clock_m_BUFG    | mm/ptr_o[0]_i_1_n_0            | U4/key_enter_reg              |                2 |              7 |
+|  clock_out_BUFG  | U5/create_new_reg_7            | U4/key_enter_reg              |                3 |              8 |
+|  clock_out_BUFG  | U8/key_event_i_1_n_0           | clear_IBUF                    |                2 |              8 |
+|  clock_out_BUFG  | U8/ps2_word_reg                | clear_IBUF                    |                2 |              9 |
+|  clock_out_BUFG  | U4/board_data[9,0][state]      | U4/key_enter_reg              |                5 |             10 |
+|  clock_out_BUFG  | U2/v_enable                    | clear_IBUF                    |                7 |             10 |
+|  clock_out_BUFG  | U4/tetrimino_next[tiles][3][y] | U4/key_enter_reg              |                5 |             11 |
+|  clock_out_BUFG  | U5/tetrimino_hold[shape]       | U4/key_enter_reg              |                6 |             11 |
+|  clock_m_BUFG    | mm/ptr_t_rep[4]_i_1_n_0        | U4/key_enter_reg              |                4 |             11 |
+|  clock_m_BUFG    | mm/ptr_s_rep[4]_i_1_n_0        | U4/key_enter_reg              |                4 |             11 |
+|  clock_out_BUFG  | U6/shift_register[11]_i_1_n_0  | clear_IBUF                    |                5 |             12 |
+|  clock_m_BUFG    | mm/ptr_gp_rep[5]_i_1_n_0       | U4/key_enter_reg              |                5 |             13 |
+|  clock_m_BUFG    |                                | mm/note_gen/a5scnt[0]_i_1_n_0 |                4 |             15 |
+|  clock_m_BUFG    |                                | mm/note_gen/g5scnt[0]_i_1_n_0 |                4 |             15 |
+|  clock_m_BUFG    |                                | mm/note_gen/g5cnt[0]_i_1_n_0  |                4 |             15 |
+|  clock_m_BUFG    |                                | mm/note_gen/b5cnt[0]_i_1_n_0  |                4 |             15 |
+|  clock_m_BUFG    |                                | mm/note_gen/a5cnt[0]_i_1_n_0  |                4 |             15 |
+|  clock_m_BUFG    |                                | mm/note_gen/g4scnt[0]_i_1_n_0 |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/c5cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_out_BUFG  | U8/E[0]                        | clear_IBUF                    |                3 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/c5scnt[0]_i_1_n_0 |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/d5cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/d5scnt[0]_i_1_n_0 |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/b4cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/a4cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_out_BUFG  | U5/move_left_reg_0[0]          | U4/key_enter_reg              |                6 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/g4cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/a4scnt[0]_i_1_n_0 |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/e5cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/f5cnt[0]_i_1_n_0  |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/f5scnt[0]_i_1_n_0 |                4 |             16 |
+|  clock_m_BUFG    |                                | mm/note_gen/e4cnt[0]_i_1_n_0  |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/f4cnt[0]_i_1_n_0  |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/f4scnt[0]_i_1_n_0 |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/d4scnt[0]_i_1_n_0 |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/d4cnt[0]_i_1_n_0  |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/p_0_in            |                5 |             17 |
+|  clock_m_BUFG    |                                | mm/note_gen/c4scnt[0]_i_1_n_0 |                5 |             17 |
+|  clock_out_BUFG  | U5/score_register              | U4/key_enter_reg              |                5 |             20 |
+|  clock_m_BUFG    |                                |                               |               24 |             24 |
+|  clock_out_BUFG  |                                | U4/key_enter_reg              |               14 |             25 |
+|  clock_IBUF_BUFG |                                | clear_IBUF                    |                7 |             27 |
+|  clock_out_BUFG  | U5/tetrimino_data[tiles][3][y] | U4/key_enter_reg              |               13 |             27 |
+|  clock_m_BUFG    |                                | U4/key_enter_reg              |               11 |             29 |
+|  clock_out_BUFG  | U5/wire_10                     | U4/key_enter_reg              |               19 |             30 |
+|  clock_out_BUFG  | U4/board_data[9,13][state]     | U4/key_enter_reg              |               26 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,10][state]     | U4/key_enter_reg              |               28 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,11][state]     | U4/key_enter_reg              |               22 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,9][state]      | U4/key_enter_reg              |               18 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,8][state]      | U4/key_enter_reg              |               21 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,7][state]      | U4/key_enter_reg              |               27 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,6][state]      | U4/key_enter_reg              |               27 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,5][state]      | U4/key_enter_reg              |               23 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,4][state]      | U4/key_enter_reg              |               26 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,3][state]      | U4/key_enter_reg              |               20 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,2][state]      | U4/key_enter_reg              |               23 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,1][state]      | U4/key_enter_reg              |               20 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,19][state]     | U4/key_enter_reg              |               25 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,18][state]     | U4/key_enter_reg              |               24 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,17][state]     | U4/key_enter_reg              |               21 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,16][state]     | U4/key_enter_reg              |               23 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,15][state]     | U4/key_enter_reg              |               27 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,14][state]     | U4/key_enter_reg              |               23 |             40 |
+|  clock_out_BUFG  | U4/board_data[9,12][state]     | U4/key_enter_reg              |               19 |             40 |
+|  clock_out_BUFG  |                                | clear_IBUF                    |               20 |             54 |
++------------------+--------------------------------+-------------------------------+------------------+----------------+
+
+
